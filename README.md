@@ -7,7 +7,7 @@ Build a GitHub Actions workflow file by ticking checkboxes instead of reading th
 - Ticked fields that still need a value turn orange and show up in a to-do list.
 - The YAML updates live; copy it into `.github/workflows/<name>.yml`.
 
-It's a single static `index.html` with no build step, so it runs as-is on GitHub Pages.
+It's a single static `index.html` with no build step, so it runs as-is on GitHub Pages. Live at https://actions.tianharjuno.com/.
 
 ## Run locally
 

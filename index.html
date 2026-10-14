@@ -3,9 +3,75 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Build GitHub Actions workflow YAML by ticking checkboxes.">
-<title>Actions YAML Builder</title>
+<title>GitHub Actions Workflow Builder – Visual YAML Generator</title>
+<meta name="description" content="Free visual builder for GitHub Actions workflow YAML. Tick checkboxes to add triggers, jobs, steps, matrix, permissions and more, and copy valid .github/workflows YAML. No sign-up, runs in your browser.">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Christian Harjuno">
+<meta name="theme-color" content="#1d6b58">
+<link rel="canonical" href="https://actions.tianharjuno.com/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Actions YAML Builder">
+<meta property="og:title" content="GitHub Actions Workflow Builder – Visual YAML Generator">
+<meta property="og:description" content="Build GitHub Actions workflow YAML by ticking checkboxes. Required fields are prompted and the YAML updates live.">
+<meta property="og:url" content="https://actions.tianharjuno.com/">
+<meta property="og:image" content="https://actions.tianharjuno.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Actions YAML Builder: checkboxes on the left, generated workflow YAML on the right">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GitHub Actions Workflow Builder – Visual YAML Generator">
+<meta name="twitter:description" content="Build GitHub Actions workflow YAML by ticking checkboxes. Required fields are prompted and the YAML updates live.">
+<meta name="twitter:image" content="https://actions.tianharjuno.com/og-image.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Actions YAML Builder",
+      "url": "https://actions.tianharjuno.com/",
+      "description": "Visual builder for GitHub Actions workflow YAML files. Pick triggers, jobs, steps, matrix builds and permissions with checkboxes and copy the generated YAML.",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any (runs in the browser)",
+      "browserRequirements": "Requires JavaScript",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "author": { "@type": "Person", "name": "Christian Harjuno", "url": "https://tianharjuno.com" }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Where do I put the generated workflow file?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Save it in your repository under .github/workflows/ with a .yml or .yaml extension, for example .github/workflows/ci.yml. GitHub picks it up on the next push." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the builder upload my workflow anywhere?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Everything runs in your browser. Your work is saved only in your browser's local storage." }
+        },
+        {
+          "@type": "Question",
+          "name": "Which workflow fields are supported?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The common ones: name, run-name, on (push, pull_request, workflow_dispatch, workflow_call, schedule, workflow_run, release, issues and more), permissions, env, defaults, concurrency, and jobs with runs-on, needs, if, strategy matrix, container, services, outputs, steps, uses and run." }
+        },
+        {
+          "@type": "Question",
+          "name": "Why are some fields orange?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A ticked field needs a value. Orange fields are listed in the to-do box above the YAML; click one to jump to it." }
+        }
+      ]
+    }
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -99,6 +165,15 @@ pre{margin:0;padding:14px 16px 18px;font-family:var(--f-mono);font-size:13px;lin
 .hk{color:var(--hl-key)}.hs{color:var(--hl-str)}.hn{color:var(--hl-num)}.hc{color:var(--hl-cmt);font-style:italic}.hd{color:var(--hl-dim)}
 .foot{font-size:12.5px;color:var(--muted)}
 .foot a{color:var(--accent)}
+.about{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:18px 40px;border-top:1px solid var(--line);padding-top:24px;margin-top:8px}
+.about-col{min-width:0;max-width:68ch}
+.about h2{font-family:var(--f-display);font-size:20px;margin:0 0 10px;text-wrap:balance}
+.about ol{margin:0;padding-left:22px;display:grid;gap:8px}
+.about dl{margin:0;display:grid;gap:4px}
+.about dt{font-weight:700;margin-top:8px}
+.about dd{margin:0;color:var(--muted)}
+.about code{font-family:var(--f-mono);font-size:.88em;background:var(--accent-soft);color:var(--ink);padding:1px 5px;border-radius:4px}
+.site-foot{padding-top:6px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -107,8 +182,8 @@ pre{margin:0;padding:14px 16px 18px;font-family:var(--f-mono);font-size:13px;lin
 <div class="wrap">
   <header>
     <div>
-      <h1>Actions <span>YAML</span> Builder</h1>
-      <p class="lede">Tick a box to add that field to your workflow. Each layer lists every field allowed at that spot, in the same order as GitHub's docs. Ticked fields that still need a value turn orange.</p>
+      <h1>GitHub Actions <span>YAML</span> Builder</h1>
+      <p class="lede">Build a GitHub Actions workflow file without digging through the docs. Tick a box to add that field to your workflow. Each layer lists every field allowed at that spot, in the same order as GitHub's docs. Ticked fields that still need a value turn orange.</p>
     </div>
     <div class="tools">
       <button class="btn" id="btn-example" type="button">Load example</button>
@@ -117,7 +192,7 @@ pre{margin:0;padding:14px 16px 18px;font-family:var(--f-mono);font-size:13px;lin
   </header>
 
   <div class="app">
-    <main class="tree" id="tree" aria-label="Workflow fields"></main>
+    <main class="tree" id="tree" aria-label="Workflow fields"><noscript><p class="cap">This builder needs JavaScript turned on.</p></noscript></main>
     <aside class="out" aria-label="Generated YAML">
       <div class="issues" id="issues" role="status"></div>
       <div class="code">
@@ -127,6 +202,33 @@ pre{margin:0;padding:14px 16px 18px;font-family:var(--f-mono);font-size:13px;lin
       <p class="foot">Covers the common fields of the <a href="https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax" target="_blank" rel="noopener">workflow syntax reference</a>. Your work is saved in this browser.</p>
     </aside>
   </div>
+
+  <section class="about" aria-labelledby="about-h">
+    <div class="about-col">
+      <h2 id="about-h">How to make a GitHub Actions workflow here</h2>
+      <ol>
+        <li>Under <code>on</code>, tick the events that should start the workflow, such as <code>push</code>, <code>pull_request</code> or <code>schedule</code>.</li>
+        <li>Under <code>jobs</code>, add a job, pick a runner in <code>runs-on</code>, and add steps. Each step either <code>uses</code> an action like <code>actions/checkout@v4</code> or <code>run</code>s shell commands.</li>
+        <li>Turn on extras when you need them: a <code>strategy.matrix</code> to test several versions, <code>permissions</code> for the <code>GITHUB_TOKEN</code>, <code>concurrency</code> to cancel old runs, or <code>services</code> for a database.</li>
+        <li>Fix anything listed in orange, press <strong>Copy</strong>, and save the YAML as <code>.github/workflows/ci.yml</code> in your repository.</li>
+      </ol>
+    </div>
+    <div class="about-col">
+      <h2>FAQ</h2>
+      <dl>
+        <dt>Where do I put the generated workflow file?</dt>
+        <dd>Save it in your repository under <code>.github/workflows/</code> with a <code>.yml</code> or <code>.yaml</code> extension, for example <code>.github/workflows/ci.yml</code>. GitHub picks it up on the next push.</dd>
+        <dt>Does the builder upload my workflow anywhere?</dt>
+        <dd>No. Everything runs in your browser. Your work is saved only in your browser's local storage.</dd>
+        <dt>Which workflow fields are supported?</dt>
+        <dd>The common ones: <code>name</code>, <code>run-name</code>, <code>on</code> (push, pull_request, workflow_dispatch, workflow_call, schedule, workflow_run, release, issues and more), <code>permissions</code>, <code>env</code>, <code>defaults</code>, <code>concurrency</code>, and <code>jobs</code> with runs-on, needs, if, strategy matrix, container, services, outputs, steps, uses and run.</dd>
+        <dt>Why are some fields orange?</dt>
+        <dd>A ticked field needs a value. Orange fields are listed in the to-do box above the YAML; click one to jump to it.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <footer class="foot site-foot">Made by <a href="https://tianharjuno.com" rel="author">Christian Harjuno</a> · <a href="https://github.com/SorataBaka/actions-builder">Source on GitHub</a></footer>
 </div>
 
 <script>

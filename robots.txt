@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://actions.tianharjuno.com/sitemap.xml
